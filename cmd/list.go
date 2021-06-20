@@ -33,10 +33,9 @@ var listCmd = &cobra.Command{
 	},
 }
 
-type todo struct {
-    ID graphql.Int
-    Title graphql.String
-    Completed graphql.Boolean
+func init() {
+	rootCmd.AddCommand(listCmd)
+    listCmd.Flags().BoolVar(&showAll, "all", false, "Completed todos will be shown if this flag is used")
 }
 
 var todoQuery struct {
@@ -65,8 +64,3 @@ func getAllTodos(client *graphql.Client) ([]todo, error) {
     return allTodoQuery.Todos, nil
 }
 
-
-func init() {
-	rootCmd.AddCommand(listCmd)
-    listCmd.Flags().BoolVar(&showAll, "all", false, "Completed todos will be shown if this flag is used")
-}
