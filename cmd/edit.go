@@ -11,14 +11,13 @@ import (
 
 var editCmd = &cobra.Command{
 	Use:   "edit --id <id> <body>",
-	Short: "",
+	Short: "Edit your todo",
 	Run: func(cmd *cobra.Command, args []string) {
         if len(args) == 0 {
             cmd.Help()
             return
         }
-        client := graphql.NewClient("http://localhost:8080/v1/graphql", nil)
-        editTodo(client, strings.Join(args, " "))
+        editTodo(strings.Join(args, " "))
 	},
 }
 
@@ -30,7 +29,7 @@ var mutateEdit struct {
     } `graphql:"update_todos_by_pk(pk_columns: {id: $id}, _set: {body: $body})"`
 }
 
-func editTodo(client *graphql.Client, body string) {
+func editTodo(body string) {
     err := client.Mutate(context.Background(), &mutateEdit,
         map[string]interface{}{
             "id": graphql.Int(id),

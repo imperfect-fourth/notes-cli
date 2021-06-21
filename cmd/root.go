@@ -6,10 +6,13 @@ import (
 	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
-	"github.com/spf13/viper"
+    "github.com/spf13/viper"
+    "github.com/hasura/go-graphql-client"
 )
 
 var cfgFile string
+var apiEndpoint string
+var client *graphql.Client
 
 var rootCmd = &cobra.Command{
 	Use:   "todo",
@@ -21,11 +24,12 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+    rootCmd.PersistentFlags().StringVar(&apiEndpoint, "api-endpoint",
+        "", "API endpoint for graphql engine",
+    )
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.todo.yaml)")
-
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func initConfig() {
@@ -35,13 +39,29 @@ func initConfig() {
 		home, err := homedir.Dir()
 		cobra.CheckErr(err)
 
+        viper.AddConfigPath(".")
 		viper.AddConfigPath(home)
 		viper.SetConfigName(".todo")
 	}
 
+    viper.SetEnvPrefix("TODO")
+    viper.BindEnv("api_endpoint")
 	viper.AutomaticEnv()
 
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	}
+    if err := viper.ReadInConfig(); err == nil {
+//		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	} else {
+        fmt.Fprintln(os.Stderr, err)
+    }
+
+    if apiEndpoint == "" && viper.Get("api_endpoint").(string) == "" {
+        fmt.Fprintln(os.Stderr,
+            "Using default address(http://localhost:8080/v1/graphql)",
+        )
+        apiEndpoint = "http://localhost:8080/v1/graphql"
+    } else if apiEndpoint == "" {
+        apiEndpoint = viper.Get("api_endpoint").(string)
+    }
+
+    client = graphql.NewClient(apiEndpoint, nil)
 }

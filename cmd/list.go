@@ -5,22 +5,20 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-    "github.com/hasura/go-graphql-client"
 )
 
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List your todos",
 	Run: func(cmd *cobra.Command, args []string) {
-        client := graphql.NewClient("http://localhost:8080/v1/graphql", nil)
 
         var todos []todo
         var err error
 
         if showAll {
-            todos, err = getAllTodos(client)
+            todos, err = getAllTodos()
         } else {
-            todos, err = getTodos(client)
+            todos, err = getTodos()
         }
 
         if err != nil {
@@ -48,7 +46,7 @@ var allTodoQuery struct {
 
 var showAll bool
 
-func getTodos(client *graphql.Client) ([]todo, error) {
+func getTodos() ([]todo, error) {
     if err := client.Query(context.Background(), &todoQuery, nil); err != nil {
         fmt.Println(err)
         return nil, err
@@ -56,7 +54,7 @@ func getTodos(client *graphql.Client) ([]todo, error) {
     return todoQuery.Todos, nil
 }
 
-func getAllTodos(client *graphql.Client) ([]todo, error) {
+func getAllTodos() ([]todo, error) {
     if err := client.Query(context.Background(), &allTodoQuery, nil); err != nil {
         fmt.Println(err)
         return nil, err

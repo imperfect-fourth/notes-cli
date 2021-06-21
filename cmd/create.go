@@ -17,8 +17,7 @@ var createCmd = &cobra.Command{
             cmd.Help()
             return
         }
-        client := graphql.NewClient("http://localhost:8080/v1/graphql", nil);
-        createTodo(client, strings.Join(args, " "))
+        createTodo(strings.Join(args, " "))
 	},
 }
 
@@ -28,7 +27,7 @@ var createMutation struct {
     } `graphql:"insert_todos_one(object: {body: $body})"`
 }
 
-func createTodo(client *graphql.Client, body string) {
+func createTodo(body string) {
     err := client.Mutate(context.Background(), &createMutation,
         map[string]interface{}{"body": graphql.String(body)},
     )
