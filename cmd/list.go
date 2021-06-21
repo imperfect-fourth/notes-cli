@@ -3,8 +3,10 @@ package cmd
 import (
     "context"
 	"fmt"
+    "os"
 
 	"github.com/spf13/cobra"
+    "text/tabwriter"
 )
 
 var listCmd = &cobra.Command{
@@ -26,8 +28,7 @@ var listCmd = &cobra.Command{
             return
         }
 
-        fmt.Println(todos)
-
+        prettyPrint(todos)
 	},
 }
 
@@ -62,3 +63,16 @@ func getAllTodos() ([]todo, error) {
     return allTodoQuery.Todos, nil
 }
 
+func prettyPrint(todos []todo) {
+    w := new(tabwriter.Writer)
+    w.Init(os.Stdout, 8, 8, 0, '\t', 0)
+
+    defer w.Flush()
+
+    fmt.Fprintf(w, "%s\t%s\t%s\t\n", "ID", "TODO", "COMPLETED")
+    for i := 0; i<len(todos); i++ {
+        fmt.Fprintf(w, "%d\t%s\t%t\t\n", int(todos[i].ID),
+            todos[i].Body, bool(todos[i].Completed),
+        )
+    }
+}

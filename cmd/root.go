@@ -48,11 +48,12 @@ func initConfig() {
     viper.BindEnv("api_endpoint")
 	viper.AutomaticEnv()
 
-    if err := viper.ReadInConfig(); err == nil {
+    viper.ReadInConfig()
+//    if err := viper.ReadInConfig(); err == nil {
 //		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	} else {
-        fmt.Fprintln(os.Stderr, err)
-    }
+//	} else {
+//        fmt.Fprintln(os.Stderr, err)
+//    }
 
     if apiEndpoint == "" && viper.Get("api_endpoint").(string) == "" {
         fmt.Fprintln(os.Stderr,
