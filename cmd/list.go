@@ -38,11 +38,11 @@ func init() {
 }
 
 var todoQuery struct {
-    Todos []todo `graphql:"todos(where: {completed: {_eq: false}})"`
+    Todos []todo `graphql:"todos(order_by: {id: asc}, where: {completed: {_eq: false}})"`
 }
 
 var allTodoQuery struct {
-    Todos []todo
+    Todos []todo `graphql:"todos(order_by: {id: asc})"`
 }
 
 var showAll bool
