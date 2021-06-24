@@ -41,7 +41,7 @@ func checkTodo(id int) {
         fmt.Fprintln(os.Stderr, err)
     }
 
-    fmt.Println("Todo marked off!")
+    fmt.Println("Todo checked off!")
 }
 
 func init() {

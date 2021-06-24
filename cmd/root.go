@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"github.com/spf13/cobra"
 
@@ -12,6 +13,7 @@ import (
 
 var cfgFile string
 var apiEndpoint string
+var adminSecret string
 var client *graphql.Client
 
 var rootCmd = &cobra.Command{
@@ -46,6 +48,7 @@ func initConfig() {
 
     viper.SetEnvPrefix("TODO")
     viper.BindEnv("api_endpoint")
+	viper.BindEnv("admin_secret")
 	viper.AutomaticEnv()
 
     viper.ReadInConfig()
@@ -55,7 +58,7 @@ func initConfig() {
 //        fmt.Fprintln(os.Stderr, err)
 //    }
 
-    if apiEndpoint == "" && viper.Get("api_endpoint").(string) == "" {
+    if apiEndpoint == "" && viper.Get("api_endpoint") == nil {
         fmt.Fprintln(os.Stderr,
             "Using default address(http://localhost:8080/v1/graphql)",
         )
@@ -63,6 +66,8 @@ func initConfig() {
     } else if apiEndpoint == "" {
         apiEndpoint = viper.Get("api_endpoint").(string)
     }
+	adminSecret = fmt.Sprintf("%v", viper.Get("admin_secret"))
 
-    client = graphql.NewClient(apiEndpoint, nil)
+	httpClient := &http.Client{Transport: &transport{underlyingTransport:http.DefaultTransport}}
+	client = graphql.NewClient(apiEndpoint, httpClient)
 }
