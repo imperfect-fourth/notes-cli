@@ -18,6 +18,9 @@ var editCmd = &cobra.Command{
             return
         }
         editTodo(strings.Join(args, " "))
+		if listFlag {
+			listCmd.Run(cmd, []string{})
+		}
 	},
 }
 

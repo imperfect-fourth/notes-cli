@@ -24,6 +24,9 @@ var toggleCmd = &cobra.Command{
             return
         }
         toggleTodo(id)
+		if listFlag {
+			listCmd.Run(cmd, []string{})
+		}
     },
 }
 

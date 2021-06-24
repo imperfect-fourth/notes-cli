@@ -24,6 +24,9 @@ var checkCmd = &cobra.Command{
             return
         }
         checkTodo(id)
+		if listFlag {
+			listCmd.Run(cmd, []string{})
+		}
     },
 }
 

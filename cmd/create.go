@@ -18,6 +18,9 @@ var createCmd = &cobra.Command{
             return
         }
         createTodo(strings.Join(args, " "))
+		if listFlag {
+			listCmd.Run(cmd, []string{})
+		}
 	},
 }
 

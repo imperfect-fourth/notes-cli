@@ -12,6 +12,7 @@ import (
 )
 
 var cfgFile string
+var listFlag bool
 var apiEndpoint string
 var adminSecret string
 var client *graphql.Client
@@ -30,6 +31,7 @@ func init() {
     rootCmd.PersistentFlags().StringVar(&apiEndpoint, "api-endpoint",
         "", "API endpoint for graphql engine",
     )
+	rootCmd.PersistentFlags().BoolVar(&listFlag, "list", false, "List todos after query")
 	cobra.OnInitialize(initConfig)
 
 }
