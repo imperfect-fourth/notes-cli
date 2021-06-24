@@ -26,7 +26,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+//	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
     rootCmd.PersistentFlags().StringVar(&apiEndpoint, "api-endpoint",
         "", "API endpoint for graphql engine",
     )
